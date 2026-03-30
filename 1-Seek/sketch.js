@@ -1,5 +1,5 @@
 let target
-
+let vehicles = [];
 
 // la fonction setup est appelée une fois au démarrage du programme par p5.js
 function setup() {
@@ -7,15 +7,28 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
   // On crée un véhicule à la position (100, 100)
-  vehicle = new Vehicle(100, 100);
+  //vehicle = new Vehicle(100, 100);
 
   // TODO: créer un tableau de véhicules en global
   // ajouter nb vehicules au tableau dans une boucle
   // avec une position random dans le canvas
+  creerVehicules(10);
 
   // La cible est un vecteur avec une position aléatoire dans le canvas
   // dirigée par la souris ensuite dans draw()
   target = createVector(random(width), random(height));
+
+  // Slider pour regler la vitesse max des véhicules
+  // On crée le slider et on le positionne
+  vitesseMaxSlider = createSlider(1, 20, 10, 1);
+  vitesseMaxSlider.position(920, 10);
+  vitesseMaxSlider.size(80);
+  // je crée un label juste devant en X
+  let labelVitesseMax = createDiv('Vitesse Max:')
+  labelVitesseMax.position(810, 10);
+  labelVitesseMax.style('color', 'black');
+  labelVitesseMax.style('font-size', '14px');
+
 }
 
 // la fonction draw est appelée en boucle par p5.js, 60 fois par seconde par défaut
@@ -35,16 +48,37 @@ function draw() {
   target.x = mouseX;
   target.y = mouseY;
 
+  vehicles.forEach(vehicle => {
+    // je déplace et dessine le véhicule
+    vehicle.applyBehaviors(target);
+    vehicle.update();
+
+    // On dessine le véhicule
+    vehicle.show();
+
+    vehicle.maxSpeed = vitesseMaxSlider.value();
+
+
+    // on affiche la vitesse max actuelle du véhicule à côté du slider
+    fill("white");
+    textSize(14);
+    textAlign(LEFT, CENTER);
+    text('Vitesse Max: ' + vehicle.maxSpeed.toFixed(1), 920, 50);
+  });
+
   // Dessine un cercle de rayon 32px à la position de la souris
   // la couleur de remplissage est rouge car on a appelé fill(255, 0, 0) plus haut
   // pas de contours car on a appelé noStroke() plus haut
   circle(target.x, target.y, 32);
 
-  // je déplace et dessine le véhicule
-  vehicle.applyBehaviors(target);
-  vehicle.update();
-
-  // On dessine le véhicule
-  vehicle.show();
 
 }
+
+function creerVehicules(nb) {
+  for (let i = 0; i < nb; i++) {
+    let v = new Vehicle(random(width), random(height));
+    vehicles.push(v);
+  }
+}
+
+
