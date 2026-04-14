@@ -1,4 +1,4 @@
-let target;
+let target
 let vehicles = [];
 
 // la fonction setup est appelée une fois au démarrage du programme par p5.js
@@ -68,6 +68,24 @@ function draw() {
   //target.x = mouseX;
   //target.y = mouseY;
 
+  vehicles.forEach(vehicle => {
+    // je déplace et dessine le véhicule
+    vehicle.applyBehaviors(target);
+    vehicle.update();
+
+    // On dessine le véhicule
+    vehicle.show();
+
+    vehicle.maxSpeed = vitesseMaxSlider.value();
+
+
+    // on affiche la vitesse max actuelle du véhicule à côté du slider
+    fill("white");
+    textSize(14);
+    textAlign(LEFT, CENTER);
+    text('Vitesse Max: ' + vehicle.maxSpeed.toFixed(1), 920, 50);
+  });
+
   // Dessine un cercle de rayon 32px à la position de la souris
   // la couleur de remplissage est rouge car on a appelé fill(255, 0, 0) plus haut
   // pas de contours car on a appelé noStroke() plus haut
@@ -115,3 +133,5 @@ function draw() {
     vehicle.edges();
   });
 }
+
+
